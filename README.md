@@ -4,7 +4,7 @@ A Model Context Protocol (MCP) server that provides AI agents with comprehensive
 
 ## Overview
 
-This MCP server enables AI assistants like Claude to access deep, structured knowledge about Karate DSL, including:
+This MCP server enables AI assistants like Claude, GitHub Copilot, and Roo Code to access deep, structured knowledge about Karate DSL, including:
 
 - **HTTP Methods** - URL, path, request, headers, parameters, cookies, multipart uploads
 - **Response Handling** - Status codes, response body, headers, cookies, timing
@@ -76,42 +76,101 @@ Add to your Claude Desktop configuration:
 }
 ```
 
-Restart Claude Desktop, and you'll see the Karate MCP server connected.
+Restart Claude Desktop to connect.
 
-### Test the Connection
+### With VS Code (GitHub Copilot)
 
-Ask Claude:
-- "List all Karate DSL categories"
-- "Show me how to make a POST request in Karate"
-- "What are the fuzzy matchers in Karate?"
-- "Generate an API authentication example"
+**📖 [Complete VS Code Setup Guide](docs/vscode-setup.md)**
+
+#### Quick Start
+
+1. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+2. Run: `MCP: Add Server`
+3. Select `Local (stdio)`
+4. Name: `karate-dsl`
+5. Command: `node`
+6. Args: `/absolute/path/to/karate-mcp-server/dist/index.js`
+7. Scope: `Global` or `Workspace`
+
+#### Or create `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "karate-dsl": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+**Test**: Ask GitHub Copilot: `@karate-dsl List all categories`
+
+### With Roo Code (VS Code Extension)
+
+**📖 [Complete Roo Code Setup Guide](docs/roocode-setup.md)**
+
+#### Quick Start
+
+1. Install Roo Code extension in VS Code
+2. Open Roo Code panel → Click MCP icon (🔌)
+3. Click **"Edit Global MCP"**
+4. Add configuration:
+
+```json
+{
+  "mcpServers": {
+    "karate-dsl": {
+      "command": "node",
+      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+5. Save and verify connection in MCP panel
+
+**Test**: Ask Roo: `List all Karate DSL categories`
 
 ## Example Queries
 
-### List Categories
+### Learning Karate
+
 ```
 List all Karate DSL categories
-```
-
-### Learn About Features
-```
 What are all the assertion operators in Karate?
-Show me how to use fuzzy matchers
+Show me how to use fuzzy matchers like #string and #regex
 How do I configure HTTP timeouts?
+Explain callonce vs call in Karate
 ```
 
-### Generate Examples
+### Generating Tests
+
 ```
 Generate a complete POST API test example
 Show me how to implement authentication with callonce
 Create a data-driven test with CSV data
 Generate a parallel execution example
+Create a UI automation test for login
+```
+
+### Building Real Tests
+
+```
+Help me write a Karate test for my REST API at https://api.example.com
+I need to test a POST /users endpoint that creates users
+How do I assert response time is under 2 seconds?
+Show me how to extract and reuse values from responses
 ```
 
 ### Best Practices
+
 ```
 What are the best practices for Karate test organization?
 How should I structure my Karate project?
+Show me patterns for reusing authentication logic
 ```
 
 ## Tool Examples
@@ -124,54 +183,45 @@ How should I structure my Karate project?
 
 ### Search Features
 
-**Query:** "Show me all assertion features in Karate"
+**Query:** "Show me all assertion features"
 
-**Tool Call:**
+**Tool:**
 ```json
-{
-  "name": "search_karate_features",
-  "arguments": {"category": "assertions"}
-}
+{"name": "search_karate_features", "arguments": {"category": "assertions"}}
 ```
 
-**Response:** Detailed documentation for 18 assertion features including match operators and fuzzy matchers
+**Response:** 18 assertion features with syntax examples
 
 ### Get Specific Feature
 
 **Query:** "How does match contains work?"
 
-**Tool Call:**
+**Tool:**
 ```json
-{
-  "name": "get_karate_feature",
-  "arguments": {"featureName": "match contains"}
-}
+{"name": "get_karate_feature", "arguments": {"featureName": "match contains"}}
 ```
 
-**Response:** Detailed syntax and examples for that specific feature
+**Response:** Detailed feature documentation
 
 ### Generate Example
 
 **Query:** "Generate a POST API example"
 
-**Tool Call:**
+**Tool:**
 ```json
-{
-  "name": "generate_karate_example",
-  "arguments": {"useCase": "api_post"}
-}
+{"name": "generate_karate_example", "arguments": {"useCase": "api_post"}}
 ```
 
-**Response:** Complete, runnable Karate test example
+**Response:** Complete, runnable test code
 
 ## Available Test Templates
 
-- `api_get` - GET request with assertions
+- `api_get` - GET request with assertions and fuzzy matchers
 - `api_post` - POST request with JSON body
-- `api_auth` - Authentication flow with callonce
-- `data_driven` - Data-driven test with Scenario Outline
-- `parallel_test` - Parallel execution configuration
-- `ui_test` - Web UI automation example
+- `api_auth` - Authentication flow with callonce for token reuse
+- `data_driven` - Data-driven test with Scenario Outline and Examples
+- `parallel_test` - Parallel execution with JUnit runner
+- `ui_test` - Web UI automation with driver
 
 ## Development
 
@@ -194,6 +244,9 @@ karate-mcp-server/
 ├── src/
 │   ├── index.ts              # MCP server with 5 tools
 │   └── karate-knowledge.ts   # Karate DSL knowledge base
+├── docs/
+│   ├── vscode-setup.md       # VS Code/Copilot setup guide
+│   └── roocode-setup.md      # Roo Code setup guide
 ├── dist/                     # Compiled JavaScript
 ├── package.json
 ├── tsconfig.json
@@ -218,6 +271,13 @@ karate-mcp-server/
 13. **mocking** (2 features) - Mock servers, stateful mocks
 14. **best_practices** (15 tips) - Organization, naming, performance, maintainability
 
+## Supported AI Assistants
+
+- **Claude Desktop** - Native MCP support
+- **GitHub Copilot** (VS Code) - MCP integration in VS Code 1.102+
+- **Roo Code** (VS Code) - AI coding assistant with MCP support
+- **Any MCP Client** - Compatible with any stdio-based MCP client
+
 ## Technical Details
 
 - Built with **@modelcontextprotocol/sdk** v1.0+
@@ -225,15 +285,39 @@ karate-mcp-server/
 - Type-safe with **Zod** schema validation
 - Comprehensive knowledge base with 100+ features
 - 6 ready-to-use test templates
+- Works with Claude, Copilot, Roo Code, and other MCP clients
+
+## Troubleshooting
+
+### Server Not Connecting
+
+1. Verify path to `dist/index.js` is absolute and correct
+2. Run `npm run build` to ensure server is compiled
+3. Check Node.js version: `node --version` (should be 18+)
+4. Restart your AI assistant / IDE
+
+### Tools Not Available
+
+1. Verify server shows as "Connected" in MCP panel
+2. Check configuration file syntax is valid JSON
+3. Look for error messages in output/console logs
+4. Try asking directly: "List karate categories"
+
+### Permission Issues
+
+1. Make `dist/index.js` executable: `chmod +x dist/index.js`
+2. Ensure Node.js has execute permissions
+3. On Windows, use full path: `C:/Program Files/nodejs/node.exe`
 
 ## Contributing
 
 Contributions welcome! Areas for improvement:
 
-- Additional test examples
+- Additional test examples and templates
 - More detailed feature explanations
 - CI/CD integration examples
-- Video tutorials
+- Video tutorials and demos
+- Support for more AI assistants
 
 ## Resources
 
@@ -241,6 +325,8 @@ Contributions welcome! Areas for improvement:
 - [Karate Documentation](https://karatelabs.github.io/karate/)
 - [Model Context Protocol](https://modelcontextprotocol.io)
 - [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
+- [VS Code MCP Documentation](https://code.visualstudio.com/docs/copilot/chat-mcp)
+- [Roo Code Documentation](https://docs.roocode.com)
 
 ## License
 
@@ -254,9 +340,11 @@ Lead Software Engineer | Test Automation Expert
 ## Acknowledgments
 
 - **Karate DSL team** for the outstanding test automation framework
-- **Anthropic** for the Model Context Protocol
+- **Anthropic** for the Model Context Protocol specification
+- **Microsoft & GitHub** for VS Code and Copilot MCP integration
+- **Roo Code team** for excellent AI coding assistant
 - **MCP community** for tools and examples
 
 ---
 
-**Note**: This is an independent community project, not officially affiliated with Karate Labs or Intuit.
+**Note**: This is an independent community project, not officially affiliated with Karate Labs, Intuit, Microsoft, GitHub, or Anthropic.
