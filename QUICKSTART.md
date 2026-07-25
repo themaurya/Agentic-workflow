@@ -6,8 +6,8 @@ Get up and running with Karate MCP Server in your AI assistant in under 5 minute
 
 ```bash
 # Clone and build
-git clone https://github.com/vspaswin/karate-mcp-server.git
-cd karate-mcp-server
+git clone https://github.com/themaurya/Agentic-workflow.git
+cd Agentic-workflow
 npm install
 npm run build
 ```
@@ -29,7 +29,7 @@ npm run build
   "mcpServers": {
     "karate": {
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -50,7 +50,7 @@ npm run build
 3. Select: `Local (stdio)`
 4. Name: `karate-dsl`
 5. Command: `node`
-6. Args: `/absolute/path/to/karate-mcp-server/dist/index.js`
+6. Args: `/absolute/path/to/Agentic-workflow/dist/index.js`
 7. Scope: Choose `Global` or `Workspace`
 
 **Method 2: Manual Config**
@@ -63,7 +63,7 @@ Create `.vscode/mcp.json` in your workspace:
     "karate-dsl": {
       "type": "stdio",
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -94,7 +94,7 @@ Create `.vscode/mcp.json` in your workspace:
   "mcpServers": {
     "karate-dsl": {
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -102,7 +102,7 @@ Create `.vscode/mcp.json` in your workspace:
 
 5. Save file
 
-**✅ Verify**: MCP panel should show `karate-dsl` with 5 tools
+**✅ Verify**: MCP panel should show `karate-dsl` with 6 tools
 
 **✅ Test**: Ask Roo "List all Karate DSL categories"
 
@@ -141,13 +141,13 @@ How do I assert response time is under 2 seconds?
 
 ### 📁 Use Absolute Paths
 
-❌ **Bad**: `./dist/index.js` or `~/karate-mcp-server/dist/index.js`
+❌ **Bad**: `./dist/index.js` or `~/Agentic-workflow/dist/index.js`
 
-✅ **Good**: `/Users/username/karate-mcp-server/dist/index.js`
+✅ **Good**: `/Users/username/Agentic-workflow/dist/index.js`
 
 **Find absolute path:**
 ```bash
-cd karate-mcp-server
+cd Agentic-workflow
 pwd  # Copy this path
 # Then append: /dist/index.js
 ```
@@ -163,7 +163,7 @@ pwd  # Copy this path
   "mcpServers": {
     "karate-dsl": {
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -182,7 +182,7 @@ Commit to git for team collaboration!
 node --version  # Should be 18+
 
 # 2. Rebuild server
-cd karate-mcp-server
+cd Agentic-workflow
 npm run build
 
 # 3. Check file exists
@@ -203,13 +203,14 @@ pwd  # Should start with /
 
 ## 📚 Available Tools
 
-Once connected, you get 5 powerful tools:
+Once connected, you get 6 powerful tools:
 
 1. **list_karate_categories** - List all 14 categories
 2. **search_karate_features** - Search within a category
 3. **get_karate_feature** - Get specific feature details
 4. **generate_karate_example** - Generate test templates
 5. **get_karate_best_practices** - Get best practices
+6. **generate_xray_testcases_csv** - Generate JIRA Xray-compatible CSV test cases
 
 ### Test Templates Available
 
@@ -239,7 +240,7 @@ Once connected, you get 5 powerful tools:
   - [Roo Code Setup](docs/roocode-setup.md)
 - **Karate DSL**: https://github.com/karatelabs/karate
 - **MCP Protocol**: https://modelcontextprotocol.io
-- **Issues**: https://github.com/vspaswin/karate-mcp-server/issues
+- **Issues**: https://github.com/themaurya/Agentic-workflow/issues
 
 ---
 

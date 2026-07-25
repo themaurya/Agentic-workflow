@@ -51,8 +51,8 @@ The MCP server exposes 6 tools:
 ### From Source
 
 ```bash
-git clone https://github.com/vspaswin/karate-mcp-server.git
-cd karate-mcp-server
+git clone https://github.com/themaurya/Agentic-workflow.git
+cd Agentic-workflow
 npm install
 npm run build
 ```
@@ -71,7 +71,7 @@ Add to your Claude Desktop configuration:
   "mcpServers": {
     "karate": {
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -90,7 +90,7 @@ Restart Claude Desktop to connect.
 3. Select `Local (stdio)`
 4. Name: `karate-dsl`
 5. Command: `node`
-6. Args: `/absolute/path/to/karate-mcp-server/dist/index.js`
+6. Args: `/absolute/path/to/Agentic-workflow/dist/index.js`
 7. Scope: `Global` or `Workspace`
 
 #### Or create `.vscode/mcp.json`:
@@ -101,7 +101,7 @@ Restart Claude Desktop to connect.
     "karate-dsl": {
       "type": "stdio",
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -125,7 +125,7 @@ Restart Claude Desktop to connect.
   "mcpServers": {
     "karate-dsl": {
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -287,7 +287,7 @@ npm run dev
 ### Project Structure
 
 ```
-karate-mcp-server/
+Agentic-workflow/
 ├── src/
 │   ├── index.ts              # MCP server with 6 tools
 │   └── karate-knowledge.ts   # Karate DSL knowledge base
