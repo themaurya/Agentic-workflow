@@ -24,13 +24,14 @@ This MCP server enables AI assistants like Claude, GitHub Copilot, and Roo Code 
 
 ### Available Tools
 
-The MCP server exposes 5 tools:
+The MCP server exposes 6 tools:
 
 1. **`list_karate_categories`** - List all 14 Karate DSL categories
 2. **`search_karate_features`** - Search features within a category
 3. **`get_karate_feature`** - Get detailed info about a specific feature
 4. **`generate_karate_example`** - Generate complete test examples
 5. **`get_karate_best_practices`** - Get best practices and recommendations
+6. **`generate_xray_testcases_csv`** - Generate JIRA Xray-compatible CSV for manual test cases
 
 ### Knowledge Base
 
@@ -173,6 +174,14 @@ How should I structure my Karate project?
 Show me patterns for reusing authentication logic
 ```
 
+### Xray/Jira CSV Test Case Creation
+
+```
+Generate Xray CSV for two manual test cases
+Create Jira Xray compatible CSV with project key QA
+Build CSV for test steps, data, and expected results
+```
+
 ## Tool Examples
 
 ### List All Categories
@@ -214,6 +223,44 @@ Show me patterns for reusing authentication logic
 
 **Response:** Complete, runnable test code
 
+### Generate Xray CSV
+
+**Query:** "Generate Xray CSV for my manual test cases"
+
+**Tool:**
+```json
+{
+  "name": "generate_xray_testcases_csv",
+  "arguments": {
+    "projectKey": "QA",
+    "issueType": "Test",
+    "testCases": [
+      {
+        "summary": "Validate successful login",
+        "description": "User can log in with valid credentials",
+        "testType": "Manual",
+        "priority": "High",
+        "labels": ["ui", "smoke"],
+        "steps": [
+          {
+            "action": "Open login page",
+            "data": "https://example.com/login",
+            "expectedResult": "Login page is displayed"
+          },
+          {
+            "action": "Enter valid credentials and click Sign In",
+            "data": "user: qa.user / password: secret",
+            "expectedResult": "Dashboard is displayed"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Response:** CSV output with Xray-compatible manual step columns
+
 ## Available Test Templates
 
 - `api_get` - GET request with assertions and fuzzy matchers
@@ -242,7 +289,7 @@ npm run dev
 ```
 karate-mcp-server/
 ├── src/
-│   ├── index.ts              # MCP server with 5 tools
+│   ├── index.ts              # MCP server with 6 tools
 │   └── karate-knowledge.ts   # Karate DSL knowledge base
 ├── docs/
 │   ├── vscode-setup.md       # VS Code/Copilot setup guide

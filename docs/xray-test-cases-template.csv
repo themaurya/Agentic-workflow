@@ -1,0 +1,3 @@
+Issue Type,Summary,Description,Project Key,Test Type,Priority,Labels,Manual Test Step 1,Manual Test Data 1,Manual Test Result 1,Manual Test Step 2,Manual Test Data 2,Manual Test Result 2
+Test,Validate successful login,User can log in with valid credentials,QA,Manual,High,"ui smoke",Open login page,https://example.com/login,Login page is displayed,"Enter valid credentials and click Sign In","user: qa.user / password: *****",Dashboard is displayed
+Test,Validate failed login with invalid password,User should see error for invalid credentials,QA,Manual,Medium,"ui negative",Open login page,https://example.com/login,Login page is displayed,"Enter invalid password and click Sign In","user: qa.user / password: wrong",Error message is displayed and login is blocked

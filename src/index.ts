@@ -9,6 +9,14 @@ const server = new McpServer({
   version: '1.0.0',
 });
 
+const escapeCsv = (value: string): string => {
+  const normalized = (value ?? '').replace(/\r\n/g, '\n');
+  if (/[",\n]/.test(normalized)) {
+    return `"${normalized.replace(/"/g, '""')}"`;
+  }
+  return normalized;
+};
+
 server.tool('search_karate_features', 'Search and retrieve Karate DSL features by category', {
   category: z.string().describe('Category: http_methods, response_handling, assertions, variables, actions, javascript_api, data_driven, reusability, configuration, parallel_execution, ui_automation, performance_testing, mocking, best_practices'),
 }, async ({ category }) => {
@@ -91,6 +99,70 @@ server.tool('get_karate_best_practices', 'Get Karate best practices', {}, async 
   const p = karateFeatures.best_practices;
   let result = `# Karate Best Practices\n\n${p.description}\n\n`;
   p.tips.forEach((t: string, i: number) => { result += `${i+1}. ${t}\n`; });
+  return { content: [{ type: 'text', text: result }] };
+});
+
+server.tool('generate_xray_testcases_csv', 'Generate JIRA Xray-compatible CSV for manual test cases', {
+  projectKey: z.string().optional().describe('Jira project key (e.g., QA, TEST). Optional but recommended.'),
+  issueType: z.string().default('Test').describe('Jira issue type name used by Xray (usually "Test").'),
+  testCases: z.array(z.object({
+    summary: z.string().describe('Test case title/summary'),
+    description: z.string().optional().describe('Test case description'),
+    testType: z.enum(['Manual', 'Cucumber']).default('Manual').describe('Xray test type'),
+    priority: z.enum(['Highest', 'High', 'Medium', 'Low', 'Lowest']).optional(),
+    labels: z.array(z.string()).optional().describe('Optional labels'),
+    steps: z.array(z.object({
+      action: z.string().describe('Manual step action'),
+      data: z.string().optional().describe('Manual step input/test data'),
+      expectedResult: z.string().describe('Expected result for this step'),
+    })).min(1).describe('Manual test steps'),
+  })).min(1),
+}, async ({ projectKey, issueType, testCases }) => {
+  const maxSteps = Math.max(...testCases.map((tc) => tc.steps.length));
+  const headers: string[] = [
+    'Issue Type',
+    'Summary',
+    'Description',
+    'Project Key',
+    'Test Type',
+    'Priority',
+    'Labels',
+  ];
+
+  for (let i = 1; i <= maxSteps; i++) {
+    headers.push(`Manual Test Step ${i}`);
+    headers.push(`Manual Test Data ${i}`);
+    headers.push(`Manual Test Result ${i}`);
+  }
+
+  const rows: string[] = [headers.map(escapeCsv).join(',')];
+
+  for (const tc of testCases) {
+    const row: string[] = [
+      issueType,
+      tc.summary,
+      tc.description ?? '',
+      projectKey ?? '',
+      tc.testType,
+      tc.priority ?? '',
+      (tc.labels ?? []).join(' '),
+    ];
+
+    for (let i = 0; i < maxSteps; i++) {
+      const step = tc.steps[i];
+      row.push(step?.action ?? '');
+      row.push(step?.data ?? '');
+      row.push(step?.expectedResult ?? '');
+    }
+
+    rows.push(row.map(escapeCsv).join(','));
+  }
+
+  const csv = rows.join('\n');
+  const result = `# Xray Test Cases CSV\n\n` +
+    `Use this CSV with Jira/Xray CSV import.\n\n` +
+    `\`\`\`csv\n${csv}\n\`\`\``;
+
   return { content: [{ type: 'text', text: result }] };
 });
 

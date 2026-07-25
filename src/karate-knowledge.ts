@@ -58,8 +58,8 @@ export const karateFeatures: Record<string, any> = {
       { name: 'table', description: 'Table to JSON array', syntax: '* table users\\n| name | age |\\n| John | 30 |' },
       { name: 'yaml', description: 'Parse YAML', syntax: "* yaml data = read('file.yaml')" },
       { name: 'csv', description: 'Parse CSV', syntax: "* csv data = read('file.csv')" },
-      { name: 'json', description: 'Parse JSON', syntax: '* json obj = \\'{"name":"John"}\\'' },
-      { name: 'xml', description: 'Parse XML', syntax: '* xml doc = \\'<user/>\\'' },
+      { name: 'json', description: 'Parse JSON', syntax: "* json obj = '{\"name\":\"John\"}'" },
+      { name: 'xml', description: 'Parse XML', syntax: "* xml doc = '<user/>'" },
       { name: 'copy', description: 'Deep copy', syntax: '* copy clone = original' }
     ]
   },
