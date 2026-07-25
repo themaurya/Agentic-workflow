@@ -40,14 +40,14 @@
      "mcpServers": {
        "karate-dsl": {
          "command": "node",
-         "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"],
+         "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"],
          "disabled": false
        }
      }
    }
    ```
 
-   **Important**: Replace `/absolute/path/to/karate-mcp-server` with your actual path!
+  **Important**: Replace `/absolute/path/to/Agentic-workflow` with your actual path!
 
 5. **Save and Verify**
    - Save the file (`Cmd+S` / `Ctrl+S`)
@@ -65,7 +65,7 @@ For project-specific MCP servers:
      "mcpServers": {
        "karate-dsl": {
          "command": "node",
-         "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+          "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
        }
      }
    }
@@ -87,7 +87,7 @@ For project-specific MCP servers:
   "mcpServers": {
     "karate-dsl": {
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"],
       "env": {
         "DEBUG": "true"
       },
@@ -114,13 +114,14 @@ For project-specific MCP servers:
 
 ### Available Tools
 
-Once connected, Roo Code has access to 5 Karate tools:
+Once connected, Roo Code has access to 6 Karate tools:
 
 1. **`list_karate_categories`** - List all Karate DSL categories
 2. **`search_karate_features`** - Search features by category
 3. **`get_karate_feature`** - Get specific feature details
 4. **`generate_karate_example`** - Generate test examples
 5. **`get_karate_best_practices`** - Get best practices
+6. **`generate_xray_testcases_csv`** - Generate JIRA Xray-compatible CSV test cases
 
 ### Example Prompts
 
@@ -194,7 +195,7 @@ When Roo Code needs to use Karate MCP tools:
 1. Open MCP settings in Roo Code (🔌 icon)
 2. Look for **karate-dsl** in the server list
 3. Status should show **Connected** with available tools listed
-4. You should see 5 tools: list_karate_categories, search_karate_features, etc.
+4. You should see 6 tools: list_karate_categories, search_karate_features, etc.
 
 ### Test with a Query
 
@@ -221,7 +222,7 @@ Roo should:
 
 **Solution**:
 1. Verify Node.js 18+ is installed: `node --version`
-2. Rebuild the server: `cd karate-mcp-server && npm run build`
+2. Rebuild the server: `cd Agentic-workflow && npm run build`
 3. Check file permissions on `dist/index.js`
 4. Try absolute path instead of relative path
 5. Restart Roo Code extension
@@ -229,7 +230,7 @@ Roo should:
 ### Tools Not Working
 
 **Solution**:
-1. Check MCP panel shows all 5 tools
+1. Check MCP panel shows all 6 tools
 2. Approve tool usage when prompted
 3. Check VS Code Developer Console for errors:
    - `Cmd+Shift+I` / `Ctrl+Shift+I`
@@ -290,7 +291,7 @@ You can run multiple instances:
   "mcpServers": {
     "karate-dsl": {
       "command": "node",
-      "args": ["/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/path/to/Agentic-workflow/dist/index.js"]
     },
     "karate-custom": {
       "command": "node",

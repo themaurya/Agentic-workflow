@@ -1,0 +1,14 @@
+{
+    "playwright": {
+        "githubUrl": "https://github.com/themaurya/playwright-java-cucumber.git",
+        "branch": "main"
+    },
+    "karateDsl": {
+        "githubUrl": "https://github.com/themaurya/Agentic-workflow.git",
+        "branch": "main"
+    },
+    "appium": {
+        "githubUrl": "https://github.com/themaurya/appium-java.git",
+        "branch": "main"
+    }
+}

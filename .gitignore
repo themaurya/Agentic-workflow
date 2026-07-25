@@ -16,7 +16,8 @@ yarn-error.log*
 .env.local
 
 # IDE
-.vscode/
+.vscode/*
+!.vscode/mcp.json
 .idea/
 *.swp
 *.swo

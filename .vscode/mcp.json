@@ -1,0 +1,34 @@
+{
+    "servers": {
+        "github": {
+            "type": "sse",
+            "url": "https://api.githubcopilot.com/mcp/"
+        },
+        "playwright": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@playwright/mcp@latest"
+            ]
+        },
+        "karate-dsl": {
+            "type": "stdio",
+            "command": "node",
+            "args": [
+                "c:/Users/Sanjay/agentic-workflow/dist/index.js"
+            ]
+        },
+        "appium-mcp": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "appium-mcp@latest"
+            ]
+        },
+        "jira": {
+            "type": "sse",
+            "url": "https://mcp.atlassian.com/v1/mcp/authv2"
+        }
+    }
+}

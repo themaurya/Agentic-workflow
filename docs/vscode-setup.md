@@ -23,7 +23,7 @@
 
 6. **Enter Arguments**: Type the absolute path to your built server:
    ```
-   /absolute/path/to/karate-mcp-server/dist/index.js
+  /absolute/path/to/Agentic-workflow/dist/index.js
    ```
    
 7. **Choose Scope**: Select `Global` to use across all workspaces, or `Workspace` for project-specific configuration
@@ -40,7 +40,7 @@ Create or edit `.vscode/mcp.json` in your project root:
     "karate-dsl": {
       "type": "stdio",
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -50,7 +50,7 @@ Create or edit `.vscode/mcp.json` in your project root:
 
 **macOS/Linux:**
 ```bash
-code --add-mcp '{"name":"karate-dsl","command":"node","args":["/absolute/path/to/karate-mcp-server/dist/index.js"]}'
+code --add-mcp '{"name":"karate-dsl","command":"node","args":["/absolute/path/to/Agentic-workflow/dist/index.js"]}'
 ```
 
 **Or manually edit** (run `MCP: Open User Configuration`):
@@ -64,7 +64,7 @@ code --add-mcp '{"name":"karate-dsl","command":"node","args":["/absolute/path/to
   "mcpServers": {
     "karate-dsl": {
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
     }
   }
 }
@@ -136,7 +136,7 @@ code --remove-mcp karate-dsl
 ### Server Not Connecting
 
 1. **Verify Path**: Ensure the path to `dist/index.js` is absolute and correct
-2. **Check Build**: Run `npm run build` in the karate-mcp-server directory
+2. **Check Build**: Run `npm run build` in the Agentic-workflow directory
 3. **Check Logs**: Open Output panel (`Cmd+Shift+U`) and select "MCP" from dropdown
 4. **Restart VS Code**: Sometimes a restart is needed after configuration changes
 
@@ -165,7 +165,7 @@ Add environment variables if needed:
     "karate-dsl": {
       "type": "stdio",
       "command": "node",
-      "args": ["/absolute/path/to/karate-mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"],
       "env": {
         "DEBUG": "true"
       }
@@ -187,7 +187,7 @@ Add to `.devcontainer/devcontainer.json`:
         "servers": {
           "karate-dsl": {
             "command": "node",
-            "args": ["/workspaces/karate-mcp-server/dist/index.js"]
+            "args": ["/workspaces/Agentic-workflow/dist/index.js"]
           }
         }
       }
