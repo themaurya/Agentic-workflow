@@ -1,398 +1,237 @@
-# Karate MCP Server
+# Agentic Workflow for Test Engineers
 
-A Model Context Protocol (MCP) server that provides AI agents with comprehensive knowledge of the **Karate DSL framework** for API testing, UI automation, and performance testing.
+This repository helps test engineers do two things from business requirements:
 
-## Overview
+1. Create manual test cases in JIRA Xray-compatible CSV format.
+2. Create automation scripts for Playwright, Karate DSL, and Appium grounded in existing framework repository conventions.
 
-This MCP server enables AI assistants like Claude, GitHub Copilot, and Roo Code to access deep, structured knowledge about Karate DSL, including:
+The workflow is human-in-the-loop (HITL): generation is gated by review and explicit approval before PR creation.
 
-- **HTTP Methods** - URL, path, request, headers, parameters, cookies, multipart uploads
-- **Response Handling** - Status codes, response body, headers, cookies, timing
-- **Assertions** - Match operators and 18+ fuzzy matchers (#string, #number, #regex, etc.)
-- **Data Structures** - Variables, JSON, XML, YAML, CSV, tables
-- **JavaScript API** - 13+ utility functions for data manipulation
-- **Data-Driven Testing** - Scenario Outline, dynamic Examples, CSV/JSON data
-- **Code Reusability** - Call, callonce, JavaScript functions
-- **Configuration** - Timeouts, SSL, proxy, headers, logging
-- **Parallel Execution** - Multi-threaded test execution
-- **UI Automation** - Cross-browser web testing
-- **Performance Testing** - Gatling integration
-- **API Mocking** - Test doubles and consumer contracts
-- **Best Practices** - 15+ recommended patterns
+## What You Can Do
 
-## Features
+- Convert requirement documents or JIRA stories into structured manual test cases.
+- Generate framework-aligned automation artifacts (feature files, step definitions, test classes, or equivalent) by first learning your framework repository.
+- Review the proposed diff before code is pushed.
+- Create PRs only after explicit human approval.
 
-### Available Tools
+## Workflow Overview
 
-The MCP server exposes 6 tools:
+```mermaid
+flowchart LR
+A[Requirement Source: JIRA or Document] --> B[Intent Router]
+B --> C[Collect Repo URL + Branch + Target]
+C --> D[Framework Learner]
+D --> E[Generator]
+E --> F[Reviewer]
+F --> G[Diff Shown to Human]
+G -->|Approved| H[PR Agent]
+G -->|Rejected| E
+```
 
-1. **`list_karate_categories`** - List all 14 Karate DSL categories
-2. **`search_karate_features`** - Search features within a category
-3. **`get_karate_feature`** - Get detailed info about a specific feature
-4. **`generate_karate_example`** - Generate complete test examples
-5. **`get_karate_best_practices`** - Get best practices and recommendations
-6. **`generate_xray_testcases_csv`** - Generate JIRA Xray-compatible CSV for manual test cases
+## Repository Components
 
-### Knowledge Base
+- `src/index.ts`: MCP server entrypoint and tools.
+- `src/karate-knowledge.ts`: Karate DSL knowledge base.
+- `.github/agents/intent-router.agent.md`: request classification and routing.
+- `.github/agents/framework-learner.agent.md`: learns framework conventions.
+- `.github/agents/generator.agent.md`: generates artifacts after learning.
+- `.github/agents/reviewer.agent.md`: validates generated artifacts.
+- `.github/agents/pr-agent.agent.md`: creates branch/commit/PR after approval.
+- `.vscode/mcp.json`: workspace MCP server wiring.
+- `framework-config.json`: framework repository URLs and default branches.
 
-- **14 categories** of Karate features
-- **100+ features and functions** documented
-- **Syntax examples** for every feature
-- **6 test templates** (GET, POST, Auth, Data-driven, Parallel, UI)
-- **15+ best practices** for maintainable tests
+## Prerequisites
 
-## Installation
+- Node.js 18+
+- VS Code 1.102+
+- GitHub Copilot Chat with MCP enabled
+- Access to JIRA (optional but recommended)
+- Access to target framework repositories (Playwright, Karate, Appium)
 
-### Prerequisites
+## One-Time Setup
 
-- Node.js 18 or higher
-- npm or yarn
-
-### From Source
+1. Clone repository and install dependencies.
 
 ```bash
 git clone https://github.com/themaurya/Agentic-workflow.git
 cd Agentic-workflow
 npm install
-npm run build
 ```
 
-## Usage
-
-### With Claude Desktop
-
-Add to your Claude Desktop configuration:
-
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
-**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "karate": {
-      "command": "node",
-      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
-    }
-  }
-}
-```
-
-Restart Claude Desktop to connect.
-
-### With VS Code (GitHub Copilot)
-
-**📖 [Complete VS Code Setup Guide](docs/vscode-setup.md)**
-
-#### Quick Start
-
-1. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-2. Run: `MCP: Add Server`
-3. Select `Local (stdio)`
-4. Name: `karate-dsl`
-5. Command: `node`
-6. Args: `/absolute/path/to/Agentic-workflow/dist/index.js`
-7. Scope: `Global` or `Workspace`
-
-#### Or create `.vscode/mcp.json`:
-
-```json
-{
-  "servers": {
-    "karate-dsl": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
-    }
-  }
-}
-```
-
-**Test**: Ask GitHub Copilot: `@karate-dsl List all categories`
-
-### With Roo Code (VS Code Extension)
-
-**📖 [Complete Roo Code Setup Guide](docs/roocode-setup.md)**
-
-#### Quick Start
-
-1. Install Roo Code extension in VS Code
-2. Open Roo Code panel → Click MCP icon (🔌)
-3. Click **"Edit Global MCP"**
-4. Add configuration:
-
-```json
-{
-  "mcpServers": {
-    "karate-dsl": {
-      "command": "node",
-      "args": ["/absolute/path/to/Agentic-workflow/dist/index.js"]
-    }
-  }
-}
-```
-
-5. Save and verify connection in MCP panel
-
-**Test**: Ask Roo: `List all Karate DSL categories`
-
-## Example Queries
-
-### Learning Karate
-
-```
-List all Karate DSL categories
-What are all the assertion operators in Karate?
-Show me how to use fuzzy matchers like #string and #regex
-How do I configure HTTP timeouts?
-Explain callonce vs call in Karate
-```
-
-### Generating Tests
-
-```
-Generate a complete POST API test example
-Show me how to implement authentication with callonce
-Create a data-driven test with CSV data
-Generate a parallel execution example
-Create a UI automation test for login
-```
-
-### Building Real Tests
-
-```
-Help me write a Karate test for my REST API at https://api.example.com
-I need to test a POST /users endpoint that creates users
-How do I assert response time is under 2 seconds?
-Show me how to extract and reuse values from responses
-```
-
-### Best Practices
-
-```
-What are the best practices for Karate test organization?
-How should I structure my Karate project?
-Show me patterns for reusing authentication logic
-```
-
-### Xray/Jira CSV Test Case Creation
-
-```
-Generate Xray CSV for two manual test cases
-Create Jira Xray compatible CSV with project key QA
-Build CSV for test steps, data, and expected results
-```
-
-## Tool Examples
-
-### List All Categories
-
-**Query:** "List all Karate categories"
-
-**Response:** Shows all 14 categories with descriptions and item counts
-
-### Search Features
-
-**Query:** "Show me all assertion features"
-
-**Tool:**
-```json
-{"name": "search_karate_features", "arguments": {"category": "assertions"}}
-```
-
-**Response:** 18 assertion features with syntax examples
-
-### Get Specific Feature
-
-**Query:** "How does match contains work?"
-
-**Tool:**
-```json
-{"name": "get_karate_feature", "arguments": {"featureName": "match contains"}}
-```
-
-**Response:** Detailed feature documentation
-
-### Generate Example
-
-**Query:** "Generate a POST API example"
-
-**Tool:**
-```json
-{"name": "generate_karate_example", "arguments": {"useCase": "api_post"}}
-```
-
-**Response:** Complete, runnable test code
-
-### Generate Xray CSV
-
-**Query:** "Generate Xray CSV for my manual test cases"
-
-**Tool:**
-```json
-{
-  "name": "generate_xray_testcases_csv",
-  "arguments": {
-    "projectKey": "QA",
-    "issueType": "Test",
-    "testCases": [
-      {
-        "summary": "Validate successful login",
-        "description": "User can log in with valid credentials",
-        "testType": "Manual",
-        "priority": "High",
-        "labels": ["ui", "smoke"],
-        "steps": [
-          {
-            "action": "Open login page",
-            "data": "https://example.com/login",
-            "expectedResult": "Login page is displayed"
-          },
-          {
-            "action": "Enter valid credentials and click Sign In",
-            "data": "user: qa.user / password: secret",
-            "expectedResult": "Dashboard is displayed"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-**Response:** CSV output with Xray-compatible manual step columns
-
-## Available Test Templates
-
-- `api_get` - GET request with assertions and fuzzy matchers
-- `api_post` - POST request with JSON body
-- `api_auth` - Authentication flow with callonce for token reuse
-- `data_driven` - Data-driven test with Scenario Outline and Examples
-- `parallel_test` - Parallel execution with JUnit runner
-- `ui_test` - Web UI automation with driver
-
-## Development
-
-### Build
+2. Build the MCP server.
 
 ```bash
 npm run build
 ```
 
-### Watch Mode
+3. Confirm build output exists.
 
 ```bash
-npm run dev
+# Windows PowerShell
+Test-Path dist/index.js
 ```
 
-### Project Structure
+4. Verify workspace MCP configuration in `.vscode/mcp.json`.
 
+The `karate-dsl` server should point to:
+
+- `c:/Users/Sanjay/agentic-workflow/dist/index.js` (or your absolute local path)
+
+5. Update `framework-config.json` with your framework repositories and branches.
+
+Example:
+
+```json
+{
+  "playwright": {
+    "githubUrl": "https://github.com/<org>/<playwright-framework-repo>.git",
+    "branch": "main"
+  },
+  "karateDsl": {
+    "githubUrl": "https://github.com/<org>/<karate-framework-repo>.git",
+    "branch": "main"
+  },
+  "appium": {
+    "githubUrl": "https://github.com/<org>/<appium-framework-repo>.git",
+    "branch": "main"
+  }
+}
 ```
-Agentic-workflow/
-├── src/
-│   ├── index.ts              # MCP server with 6 tools
-│   └── karate-knowledge.ts   # Karate DSL knowledge base
-├── docs/
-│   ├── vscode-setup.md       # VS Code/Copilot setup guide
-│   └── roocode-setup.md      # Roo Code setup guide
-├── dist/                     # Compiled JavaScript
-├── package.json
-├── tsconfig.json
-├── .gitignore
-└── README.md
-```
 
-## Categories Covered
+## How Test Engineers Use This
 
-1. **http_methods** (11 features) - URL, path, method, request, params, headers, cookies, forms, multipart, SOAP, retry
-2. **response_handling** (6 features) - Status, response, bytes, headers, cookies, timing
-3. **assertions** (18 features) - Match operators, fuzzy matchers (#string, #number, #regex, etc.)
-4. **variables** (8 features) - def, text, table, YAML, CSV, JSON, XML, copy
-5. **actions** (10 features) - assert, print, get, set, remove, configure, call, eval, read
-6. **javascript_api** (13 functions) - log, get, set, jsonPath, map, filter, merge, etc.
-7. **data_driven** (4 features) - Scenario Outline, dynamic Examples, CSV/JSON data
-8. **reusability** (4 features) - call, callonce, JavaScript functions, parameters
-9. **configuration** (5 settings) - Timeouts, SSL, proxy, headers
-10. **parallel_execution** (3 features) - Runner, thread configuration, @parallel tag
-11. **ui_automation** (4 features) - driver, input, click, screenshot
-12. **performance_testing** (2 features) - Gatling integration, load profiles
-13. **mocking** (2 features) - Mock servers, stateful mocks
-14. **best_practices** (15 tips) - Organization, naming, performance, maintainability
+### A) Create Manual Test Cases from JIRA/Requirements
 
-## Supported AI Assistants
+Use your chat prompt to provide:
 
-- **Claude Desktop** - Native MCP support
-- **GitHub Copilot** (VS Code) - MCP integration in VS Code 1.102+
-- **Roo Code** (VS Code) - AI coding assistant with MCP support
-- **Any MCP Client** - Compatible with any stdio-based MCP client
+- Requirement source: JIRA story ID or uploaded requirement doc.
+- Scope: what feature/module to cover.
+- Priority/tag preferences.
 
-## Technical Details
+Example prompts:
 
-- Built with **@modelcontextprotocol/sdk** v1.0+
-- Uses **stdio** transport for local integration
-- Type-safe with **Zod** schema validation
-- Comprehensive knowledge base with 100+ features
-- 6 ready-to-use test templates
-- Works with Claude, Copilot, Roo Code, and other MCP clients
+- `Create manual test cases from JIRA story QA-142 for happy path and edge cases in Xray CSV format.`
+- `Generate Xray CSV test cases from this requirement document for payment retry and timeout scenarios.`
+
+Expected output:
+
+- Structured manual test case CSV with step, data, expected result columns.
+- Ready for JIRA/Xray import.
+
+If needed, use the MCP tool flow equivalent:
+
+- `generate_xray_testcases_csv` with project key, issue type, and test case steps.
+
+### B) Create Framework-Grounded Automation Scripts
+
+Use your chat prompt to provide:
+
+- Framework type: Playwright, Karate, or Appium.
+- Requirement source: JIRA ID or requirement doc.
+- GitHub framework repository URL.
+- Target branch name.
+- Target app URL/spec/build context.
+
+Example prompts:
+
+- `Create Playwright automation for JIRA QA-142. Repo: https://github.com/acme/playwright-java-framework.git branch: main.`
+- `Generate Karate API tests for this story using https://github.com/acme/karate-api-framework.git branch: develop.`
+- `Create Appium test flow from this requirement using https://github.com/acme/appium-framework.git branch: main.`
+
+The system enforces this sequence:
+
+1. Intent router classifies request.
+2. Required inputs (repo + branch + source) are collected.
+3. Framework learner reads requirements, then learns framework conventions.
+4. Generator creates artifacts in framework style.
+5. Reviewer validates quality and completeness.
+6. Human reviews diff.
+7. PR agent creates PR only after explicit approval.
+
+## HITL Rules (Enforced)
+
+- No repo URL or branch: generation is blocked.
+- No framework learning: generation is blocked.
+- No reviewer READY FOR APPROVAL: PR is blocked.
+- No explicit human approval: PR is blocked.
+- Direct push to main/master by PR agent is blocked.
+
+## Daily Runbook for Test Engineers
+
+1. Start from requirement (JIRA or doc).
+2. Ask for either manual test case CSV or automation script.
+3. Provide framework repo URL and branch when asked.
+4. Validate generated diff carefully.
+5. Approve only after review comments are resolved.
+6. Confirm PR creation request explicitly.
+
+## Validation Checklist
+
+Before using in production, verify:
+
+1. `npm run build` succeeds.
+2. `dist/index.js` exists.
+3. `.vscode/mcp.json` is present and valid.
+4. `framework-config.json` has correct repo URLs/branches.
+5. MCP tools are visible in chat (for example via karate-dsl requests).
+6. Agent files exist under `.github/agents`.
 
 ## Troubleshooting
 
-### Server Not Connecting
+### MCP server not available
 
-1. Verify path to `dist/index.js` is absolute and correct
-2. Run `npm run build` to ensure server is compiled
-3. Check Node.js version: `node --version` (should be 18+)
-4. Restart your AI assistant / IDE
+- Run `npm install`.
+- Run `npm run build`.
+- Ensure `.vscode/mcp.json` path is absolute and correct.
+- Restart VS Code window.
 
-### Tools Not Available
+### Build fails with TypeScript errors
 
-1. Verify server shows as "Connected" in MCP panel
-2. Check configuration file syntax is valid JSON
-3. Look for error messages in output/console logs
-4. Try asking directly: "List karate categories"
+- Ensure dependencies are installed in this workspace.
+- Re-run `npm install` then `npm run build`.
 
-### Permission Issues
+### Agent asks repeatedly for inputs
 
-1. Make `dist/index.js` executable: `chmod +x dist/index.js`
-2. Ensure Node.js has execute permissions
-3. On Windows, use full path: `C:/Program Files/nodejs/node.exe`
+- Provide all required values in one prompt:
+  - framework
+  - repo URL
+  - branch
+  - requirement source
+  - target context (url/spec/build)
 
-## Contributing
+### PR not created
 
-Contributions welcome! Areas for improvement:
+- Confirm reviewer status is READY FOR APPROVAL.
+- Provide explicit approval text such as: `approved, create PR`.
 
-- Additional test examples and templates
-- More detailed feature explanations
-- CI/CD integration examples
-- Video tutorials and demos
-- Support for more AI assistants
+## Suggested Prompt Templates
 
-## Resources
+Manual test cases:
 
-- [Karate DSL Official Repo](https://github.com/karatelabs/karate)
-- [Karate Documentation](https://karatelabs.github.io/karate/)
-- [Model Context Protocol](https://modelcontextprotocol.io)
-- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
-- [VS Code MCP Documentation](https://code.visualstudio.com/docs/copilot/chat-mcp)
-- [Roo Code Documentation](https://docs.roocode.com)
+`Create JIRA Xray CSV test cases from JIRA <ID> for <feature scope>. Include positive, negative, and boundary scenarios.`
 
-## License
+Playwright:
 
-MIT
+`Use Playwright framework repo <repo-url> branch <branch>. Generate tests from JIRA <ID>, then show diff for approval.`
 
-## Author
+Karate:
 
-**vspaswin**  
-Lead Software Engineer | Test Automation Expert
+`Use Karate framework repo <repo-url> branch <branch>. Generate API tests from requirement doc, then show diff for approval.`
 
-## Acknowledgments
+Appium:
 
-- **Karate DSL team** for the outstanding test automation framework
-- **Anthropic** for the Model Context Protocol specification
-- **Microsoft & GitHub** for VS Code and Copilot MCP integration
-- **Roo Code team** for excellent AI coding assistant
-- **MCP community** for tools and examples
+`Use Appium framework repo <repo-url> branch <branch>. Generate mobile automation from JIRA <ID>, then show diff for approval.`
+
+## Notes for Leads
+
+- Keep framework repositories clean and convention-driven so learner outputs remain consistent.
+- Update `framework-config.json` when framework repos or default branches change.
+- Keep `.github/agents` files versioned and reviewed like code.
 
 ---
 
-**Note**: This is an independent community project, not officially affiliated with Karate Labs, Intuit, Microsoft, GitHub, or Anthropic.
-# Test update
+If you want, this README can also be split into role-specific guides:
+
+- `docs/test-engineer-guide.md`
+- `docs/test-lead-governance.md`
+- `docs/mcp-admin-setup.md`
